@@ -13,7 +13,7 @@ const GridHeader = styled.div`
     background-color: #f2f2f2;
 `;
 
-const GridCell = styled.div`
+const GridCell = styled.div<{ index: number }>`
     padding: 10px;
     background-color: ${(props) => (props.index % 2 !== 0 ? '#f2f2f2' : '#ffffff')};
 `;
@@ -25,7 +25,9 @@ function App() {
 
     startPolling(interval);
 
-    const fetchedTime = data ? new Date(data.getExchangeRates[0].updatedAt).toLocaleString() : '';
+    const fetchedTime = data?.getExchangeRates.length
+        ? new Date(data.getExchangeRates[0].updatedAt).toLocaleString()
+        : '';
 
     return (
         <div className="container">
