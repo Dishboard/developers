@@ -14,7 +14,7 @@ export class ExchangeRateService {
         private readonly exchangeRateRepository: Repository<ExchangeRate>
     ) {}
 
-    @Cron('*/1 * * * *') // Runs every 5 minutes
+    @Cron('*/5 * * * *') // Runs every 5 minutes
     public async fetchAndSaveExchangeRates(): Promise<void> {
         try {
             const date = new Date();
