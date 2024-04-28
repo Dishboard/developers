@@ -3,8 +3,8 @@ const path = require('path');
 module.exports = {
     extends: ['@dishboard'],
     parserOptions: {
-        project: path.resolve(process.cwd(), './tsconfig.json'),
-        tsconfigRootDir: process.cwd(),
+        project: path.resolve(__dirname, './tsconfig.json'),
+        tsconfigRootDir: __dirname,
         sourceType: 'module',
     },
     env: {
@@ -15,7 +15,7 @@ module.exports = {
     settings: {
         'import/resolver': {
             typescript: {
-                project: path.resolve(process.cwd(), './tsconfig.json'),
+                project: path.resolve(__dirname, './tsconfig.json'),
             },
         },
     },

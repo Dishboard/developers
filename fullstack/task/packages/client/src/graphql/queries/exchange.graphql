@@ -1,0 +1,10 @@
+query ExchangeRates {
+    getExchangeRates {
+        country
+        rate
+        code
+        updatedAt
+        currency
+        amount
+    }
+}
