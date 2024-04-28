@@ -10,7 +10,6 @@ export class ExchangeRateResolver {
         private readonly exchangeRateService: ExchangeRateService
     ) {}
 
-    // TODO: Implement a GraphQL Query that returns the exchange rates
     @Query(() => [ExchangeRate])
     async getExchangeRates() {
         const response = await this.exchangeRateService.getExchangeRates();
