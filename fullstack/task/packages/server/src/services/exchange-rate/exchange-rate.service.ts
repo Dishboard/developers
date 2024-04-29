@@ -75,7 +75,8 @@ export class ExchangeRateService {
                 });
 
                 if (existingRate) {
-                    await this.exchangeRateRepository.update(existingRate.id, data);
+                    if (existingRate?.rate !== data.rate)
+                        await this.exchangeRateRepository.update(existingRate.id, data);
                 } else {
                     await this.exchangeRateRepository.save(data);
                 }
