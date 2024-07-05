@@ -1,13 +1,13 @@
-import { Query, Resolver } from '@nestjs/graphql';
+import { Args, Query, Resolver } from '@nestjs/graphql';
 import { ExchangeRateService } from './exchange-rate.service';
+import { GetExchangeRatesResult } from './types';
 
 @Resolver()
 export class ExchangeRateResolver {
     constructor(private readonly exchangeRateService: ExchangeRateService) {}
 
-    // TODO: Implement a GraphQL Query that returns the exchange rates
-    @Query(() => String)
-    async exchangeRates(): Promise<string> {
-        return 'Hello';
+    @Query(() => GetExchangeRatesResult)
+    async exchangeRates(@Args('language') language: string): Promise<GetExchangeRatesResult> {
+        return this.exchangeRateService.getExchangeRates(language);
     }
 }

@@ -17,8 +17,27 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type ExchangeRate {
+  id: ID!
+  createdAtUtc: DateTime!
+  updatedAtUtc: DateTime
+  deleteDateUtc: DateTime
+  version: Int!
+  currencyCode: String!
+  rate: Float!
+  amount: Float!
+  country: String!
+  validFor: DateTime!
+}
+
+type GetExchangeRatesResult {
+  rates: [ExchangeRate!]!
+  timestamp: DateTime!
+  cached: Boolean!
+}
+
 type Query {
-  exchangeRates: String!
+  exchangeRates(language: String!): GetExchangeRatesResult!
   exampleByName(name: String!): Example
 }
 
