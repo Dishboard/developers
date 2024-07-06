@@ -1,5 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { ExchangeRate } from '../../entities/exchange-rate.entity';
+import { z } from 'zod';
+import { ExchangeRate } from '../../entities';
 
 @ObjectType()
 export class GetExchangeRatesResult {
@@ -12,3 +13,19 @@ export class GetExchangeRatesResult {
     @Field(() => Boolean)
     cached!: boolean;
 }
+
+export const ExpectedExchangeRateCNBSchema = z.object({
+    currencyCode: z.string(),
+    currency: z.string(),
+    order: z.number().int(),
+    rate: z.number(),
+    amount: z.number().int(),
+    country: z.string(),
+    validFor: z.string(),
+});
+
+export type ExchangeRateCNB = z.infer<typeof ExpectedExchangeRateCNBSchema>;
+
+export const expectedExchangeRateResponseSchema = z.object({
+    rates: z.array(ExpectedExchangeRateCNBSchema),
+});

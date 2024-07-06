@@ -6,7 +6,7 @@ import { ExchangeRateService } from './exchange-rate.service';
 import { ExchangeRateResolver } from './exchange-rate.resolver';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([ExchangeRate])],
+    imports: [HttpModule, TypeOrmModule.forFeature([ExchangeRate])],
     providers: [ExchangeRateService, ExchangeRateResolver],
     exports: [ExchangeRateService],
 })
