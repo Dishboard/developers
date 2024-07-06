@@ -8,7 +8,7 @@ import { VAR_CHAR } from './constants';
 export class ExchangeRate extends EntityWithMeta {
     @Field(() => String)
     @Column({ ...VAR_CHAR })
-    public currencyCode!: string;
+    public currency!: string;
 
     @Field(() => Number)
     @Column({ type: 'decimal', precision: 10, scale: 2 })
@@ -25,4 +25,8 @@ export class ExchangeRate extends EntityWithMeta {
     @Field(() => Date)
     @Column({ type: 'date' })
     public validFor!: Date;
+
+    @Field(() => String)
+    @Column({ ...VAR_CHAR })
+    public currencyCode!: string;
 }

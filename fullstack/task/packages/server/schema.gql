@@ -23,11 +23,12 @@ type ExchangeRate {
   updatedAtUtc: DateTime
   deleteDateUtc: DateTime
   version: Int!
-  currencyCode: String!
+  currency: String!
   rate: Float!
   amount: Float!
   country: String!
   validFor: DateTime!
+  currencyCode: String!
 }
 
 type GetExchangeRatesResult {
