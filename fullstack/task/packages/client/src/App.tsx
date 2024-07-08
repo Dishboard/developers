@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { useExchangeRatesQuery } from './generated/graphql';
 
@@ -21,14 +21,18 @@ const GridCell = styled.div<{ index: number }>`
 const interval = 1000 * 60 * 5; // 5 mins
 
 function App() {
-    const { data, loading, error, startPolling } = useExchangeRatesQuery();
+    const { data, loading, error, startPolling, stopPolling } = useExchangeRatesQuery();
 
-    startPolling(interval);
+    useEffect(() => {
+        startPolling(interval);
+        return () => {
+            stopPolling();
+        };
+    }, [startPolling, stopPolling]);
 
     const fetchedTime = data?.getExchangeRates.length
         ? new Date(data.getExchangeRates[0].updatedAt).toLocaleString()
         : '';
-
     return (
         <div className="container">
             <h3> Latest Exchange Rates Czech National Bank: {data?.getExchangeRates.length} </h3>
