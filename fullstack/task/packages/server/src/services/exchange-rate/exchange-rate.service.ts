@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { MoreThan, Repository } from 'typeorm';
 import { HttpService } from '@nestjs/axios';
 import { catchError, delay, map, retryWhen, tap } from 'rxjs/operators';
-import { concatMap, lastValueFrom, of, throwError } from 'rxjs';
+import { concatMap, lastValueFrom, of } from 'rxjs';
 import { ConfigService } from '@nestjs/config';
 import { AxiosError, AxiosResponse } from 'axios';
 import { ExchangeRate } from '../../entities';
@@ -47,7 +47,7 @@ export class ExchangeRateService {
             return {
                 rates: cachedRates,
                 cached: true,
-                timestamp: cachedRates[0].createdAtUtc,
+                timestamp: new Date(cachedRates[0].createdAtUtc),
             };
         }
 
@@ -60,7 +60,6 @@ export class ExchangeRateService {
             this.logger.error('Failed to cache exchange rates', e);
         }
 
-        this.logger.debug('Returning exchange rates from API');
         return {
             rates,
             cached: false,
@@ -104,16 +103,16 @@ export class ExchangeRateService {
 
     fetchExchangeRatesFromApi(language: string): Promise<ExchangeRate[]> {
         const apiUrl = `${this.cnbExRateUrl}?lang=${language}`;
+        this.logger.log(`Fetching exchange rates from API: ${apiUrl}`);
         const source$ = this.httpService.get(apiUrl).pipe(
             tap(() => this.logger.log('Fetched data from API: ')),
             retryWhen((errors) => errors.pipe(concatMap(this.handleRequestErrorAndRetry))),
             map(this.transformResponseToRates),
             catchError((error) => {
-                this.logger.error('Failed to fetch exchange rates from API', error);
+                this.logger.error(`Failed to fetch exchange rates from API: ${error}`);
                 return of([]);
             })
         );
-        this.logger.debug(`Fetching exchange rates from API: ${apiUrl}`);
         return lastValueFrom(source$);
     }
 
@@ -121,8 +120,9 @@ export class ExchangeRateService {
         const rate = new ExchangeRate();
         Object.assign(rate, rateLike, {
             validFor: new Date(rateLike.validFor),
+            createdAtUtc: new Date(),
         });
-        this.logger.debug(`rate updated at: ${JSON.stringify(rate.updatedAtUtc)}`);
+        rate.updatedAtUtc = rate.createdAtUtc;
         return rate;
     }
 

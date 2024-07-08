@@ -23,7 +23,7 @@ export class ExchangeRate extends EntityWithMeta {
     public country!: string;
 
     @Field(() => Date)
-    @Column({ type: 'date' })
+    @Column({ type: 'timestamptz' })
     public validFor!: Date;
 
     @Field(() => String)
