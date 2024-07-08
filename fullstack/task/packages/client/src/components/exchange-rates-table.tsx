@@ -9,7 +9,6 @@ import {
     TablePagination,
     TableRow,
 } from '@mui/material';
-import { format } from 'date-fns';
 import { ExchangeRate } from '../types';
 
 interface ExchangeRatesTableProps {
@@ -37,27 +36,23 @@ export const ExchangeRatesTable: React.FC<ExchangeRatesTableProps> = ({
                 <Table>
                     <TableHead>
                         <TableRow>
-                            <TableCell>Currency</TableCell>
-                            <TableCell align="right">Rate</TableCell>
-                            <TableCell align="right">Amount</TableCell>
                             <TableCell>Country</TableCell>
-                            <TableCell>Valid For</TableCell>
+                            <TableCell>Currency</TableCell>
+                            <TableCell align="right">Amount</TableCell>
                             <TableCell>Currency Code</TableCell>
+                            <TableCell align="right">Rate</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {paginatedRates.map((rate) => (
                             <TableRow key={rate.id}>
+                                <TableCell>{rate.country}</TableCell>
                                 <TableCell component="th" scope="row">
                                     {rate.currency}
                                 </TableCell>
-                                <TableCell align="right">{rate.rate.toFixed(4)}</TableCell>
                                 <TableCell align="right">{rate.amount.toFixed(2)}</TableCell>
-                                <TableCell>{rate.country}</TableCell>
-                                <TableCell>
-                                    {format(new Date(rate.validFor), 'MMMM dd, yyyy')}
-                                </TableCell>
                                 <TableCell>{rate.currencyCode}</TableCell>
+                                <TableCell align="right">{rate.rate.toFixed(4)}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
