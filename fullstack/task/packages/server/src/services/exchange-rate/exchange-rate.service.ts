@@ -3,9 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { MoreThan, Repository } from 'typeorm';
 import { HttpService } from '@nestjs/axios';
 import { catchError, delay, map, retryWhen, tap } from 'rxjs/operators';
-import { concatMap, lastValueFrom, of } from 'rxjs';
+import { concatMap, lastValueFrom, of, throwError } from 'rxjs';
 import { ConfigService } from '@nestjs/config';
-import { AxiosError } from 'axios';
+import { AxiosError, AxiosResponse } from 'axios';
 import { ExchangeRate } from '../../entities';
 import {
     ExchangeRateCNB,
@@ -19,7 +19,7 @@ const DEFAULT_CNB_EXRATE_URL = 'https://api.cnb.cz/cnbapi/exrates/daily';
 export class ExchangeRateService {
     private readonly logger = new Logger(ExchangeRateService.name);
     private readonly cnbExRateUrl: string;
-    private readonly updateFrequencyMinutes: number;
+    readonly updateFrequencyMinutes: number;
     private readonly retryDelay: number;
     private readonly retryAttempts: number;
 
@@ -35,9 +35,12 @@ export class ExchangeRateService {
             this.configService.get<number>('EXCHANGE_RATE_UPDATE_FREQUENCY_MINUTES') ?? 5;
         this.retryDelay = this.configService.get<number>('EXCHANGE_RATE_RETRY_DELAY') ?? 1000;
         this.retryAttempts = this.configService.get<number>('EXCHANGE_RATE_RETRY_ATTEMPTS') ?? 3;
+
+        this.handleRequestErrorAndRetry = this.handleRequestErrorAndRetry.bind(this);
+        this.transformResponseToRates = this.transformResponseToRates.bind(this);
     }
 
-    public async getExchangeRates(language: string): Promise<GetExchangeRatesResult> {
+    async getExchangeRates(language: string): Promise<GetExchangeRatesResult> {
         const cachedRates = await this.getCachedExchangeRates();
         if (cachedRates.length) {
             this.logger.debug('Returning exchange rates from cache');
@@ -65,7 +68,7 @@ export class ExchangeRateService {
         };
     }
 
-    private getCachedExchangeRates(): Promise<ExchangeRate[]> {
+    getCachedExchangeRates(): Promise<ExchangeRate[]> {
         const fiveMinutesAgo = new Date(Date.now() - this.updateFrequencyMinutes * 60 * 1000);
         return this.exchangeRateRepository.find({
             where: {
@@ -74,7 +77,7 @@ export class ExchangeRateService {
         });
     }
 
-    private handleRequestErrorAndRetry = (error: AxiosError, attempt: number) => {
+    handleRequestErrorAndRetry(error: AxiosError, attempt: number) {
         const isAnyAttemptsToServerErrorRetry =
             this.isServerError(error) && attempt < this.retryAttempts;
         if (isAnyAttemptsToServerErrorRetry) {
@@ -88,18 +91,18 @@ export class ExchangeRateService {
             error
         );
         throw new Error(error.message);
-    };
+    }
 
-    private transformResponseToRates = (response: { data: object }) => {
+    transformResponseToRates(response: Partial<AxiosResponse>) {
         const parseResult = expectedExchangeRateResponseSchema.safeParse(response.data);
         if (parseResult.success) {
             return parseResult.data.rates.map((rate) => this.mapToExchangeRate(rate));
         }
         this.logger.warn(`Unexpected API response format: ${parseResult.error.message}}`);
         return [];
-    };
+    }
 
-    private fetchExchangeRatesFromApi(language: string): Promise<ExchangeRate[]> {
+    fetchExchangeRatesFromApi(language: string): Promise<ExchangeRate[]> {
         const apiUrl = `${this.cnbExRateUrl}?lang=${language}`;
         const source$ = this.httpService.get(apiUrl).pipe(
             tap(() => this.logger.log('Fetched data from API: ')),
@@ -110,16 +113,11 @@ export class ExchangeRateService {
                 return of([]);
             })
         );
-
         this.logger.debug(`Fetching exchange rates from API: ${apiUrl}`);
         return lastValueFrom(source$);
     }
 
-    private isServerError(error: AxiosError): boolean {
-        return (error?.response?.status ?? 0) >= 500;
-    }
-
-    private mapToExchangeRate(rateLike: ExchangeRateCNB) {
+    mapToExchangeRate(rateLike: ExchangeRateCNB) {
         const rate = new ExchangeRate();
         Object.assign(rate, rateLike, {
             validFor: new Date(rateLike.validFor),
@@ -128,7 +126,11 @@ export class ExchangeRateService {
         return rate;
     }
 
-    private async cacheExchangeRates(rates: ExchangeRate[]) {
+    async cacheExchangeRates(rates: ExchangeRate[]) {
         await this.exchangeRateRepository.save(rates);
+    }
+
+    private isServerError(error: AxiosError): boolean {
+        return (error?.response?.status ?? 0) >= 500;
     }
 }

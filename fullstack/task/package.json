@@ -11,6 +11,7 @@
         "codecheck:fix": "yarn nx run-many --target codecheck --configuration fix --all"
     },
     "dependencies": {
+        "@nestjs/testing": "^10.3.10",
         "@types/jest": "28.1.8",
         "eslint": "8.24.0",
         "jest": "28.1.3",
