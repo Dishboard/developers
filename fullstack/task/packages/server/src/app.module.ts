@@ -4,7 +4,6 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { graphqlConfig, typeormConfig } from './config';
 import { modules } from './entity-modules';
-import { ExchangeRateModule } from './services/exchange-rate/exchange-rate.module';
 
 @Module({
     imports: [
@@ -13,7 +12,6 @@ import { ExchangeRateModule } from './services/exchange-rate/exchange-rate.modul
         }),
         TypeOrmModule.forRoot(typeormConfig),
         GraphQLModule.forRoot(graphqlConfig),
-        ExchangeRateModule,
         ...modules,
     ],
     controllers: [],

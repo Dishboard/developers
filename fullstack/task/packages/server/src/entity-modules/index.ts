@@ -1,3 +1,3 @@
-import { ExampleModule } from './example/example.module';
+import { ExchangeRateModule } from '../services/exchange-rate/exchange-rate.module';
 
-export const modules = [ExampleModule];
+export const modules = [ExchangeRateModule];
