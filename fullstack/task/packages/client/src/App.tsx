@@ -19,7 +19,9 @@ const App: React.FC = () => {
         <ApolloProvider client={client}>
             <ThemeProvider theme={theme}>
                 <CssBaseline />
-                <ExchangeRates />
+                <div style={{ height: '100vh' }}>
+                    <ExchangeRates />
+                </div>
             </ThemeProvider>
         </ApolloProvider>
     );

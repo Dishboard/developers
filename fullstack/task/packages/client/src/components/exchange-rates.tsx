@@ -45,7 +45,7 @@ export const ExchangeRates: React.FC = () => {
     }
 
     return (
-        <Box sx={{ p: 3 }}>
+        <MainBox>
             <Typography variant="h4" gutterBottom>
                 Exchange Rates
             </Typography>
@@ -82,6 +82,16 @@ export const ExchangeRates: React.FC = () => {
                     onRowsPerPageChange={handleRowsPerPageChange}
                 />
             )}
-        </Box>
+        </MainBox>
     );
 };
+
+const MainBox = styled(Box)(({ theme }) => ({
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    maxWidth: 1000,
+    height: '100%',
+    margin: '0 auto',
+    padding: theme.spacing(2),
+}));
