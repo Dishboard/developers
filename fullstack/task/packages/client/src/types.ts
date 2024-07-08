@@ -16,6 +16,8 @@ export type ExchangeRatesData = {
     };
 };
 
+export const languages = ['EN', 'CZ'] as const;
+
 export type ExchangeRatesVars = {
-    language: string;
+    language: typeof languages[number];
 };

@@ -1,17 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
-import { Box, Button, CircularProgress, Grid, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { format } from 'date-fns';
 import { ExchangeRatesData, ExchangeRatesVars } from '../types';
 import { EXCHANGE_RATES_QUERY } from '../graphql';
 import { usePagination } from '../hooks';
-import { LanguageToggle } from './language-toggle';
 import { ExchangeRatesTable } from './exchange-rates-table';
-
-const StyledButton = styled(Button)(({ theme }) => ({
-    marginTop: theme.spacing(2),
-}));
+import { DataFetchRow } from './data-fetch-row';
 
 export const ExchangeRates: React.FC = () => {
     const [language, setLanguage] = useState<'EN' | 'CZ'>('EN');
@@ -50,28 +45,13 @@ export const ExchangeRates: React.FC = () => {
                 Exchange Rates
             </Typography>
 
-            {data && (
-                <Typography color="gray" variant="subtitle1" sx={{ mt: 2 }}>
-                    Last updated: {format(new Date(data.exchangeRates.timestamp), 'PPpp')}
-                </Typography>
-            )}
-
-            <Grid container>
-                <Grid item xs={12} sm={6}>
-                    {import.meta.env.VITE_MULTIPLE_LANGUAGE_SUPPORT && (
-                        <LanguageToggle
-                            language={language}
-                            onLanguageChange={handleLanguageChange}
-                        />
-                    )}
-                </Grid>
-
-                <Grid item xs={12} sm={6} sx={{ textAlign: 'right' }}>
-                    <StyledButton variant="contained" onClick={handleRefetch} disabled={loading}>
-                        {loading ? <CircularProgress size={24} /> : 'Refetch'}
-                    </StyledButton>
-                </Grid>
-            </Grid>
+            <DataFetchRow
+                loading={loading}
+                data={data}
+                handleRefetch={handleRefetch}
+                handleLanguageChange={handleLanguageChange}
+                language={language}
+            />
 
             {data && (
                 <ExchangeRatesTable
