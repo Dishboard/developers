@@ -5,6 +5,7 @@
         "packages/**"
     ],
     "scripts": {
+        "start": "concurrently -n server,client \"yarn server start\" \"yarn client start\"",
         "server": "yarn nx run --project server",
         "client": "yarn nx run --project client",
         "codecheck": "yarn nx run-many --target codecheck --all",
@@ -22,6 +23,7 @@
     },
     "devDependencies": {
         "@types/node": "18.8.0",
+        "concurrently": "^8.2.2",
         "nx": "15.5.2",
         "tsconfig-paths": "4.1.0"
     }
