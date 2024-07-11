@@ -7,9 +7,11 @@
     "scripts": {
         "start": "concurrently -n server,client \"yarn server start\" \"yarn client start\"",
         "server": "yarn nx run --project server",
+        "build": "yarn nx run-many --target build --all",
         "client": "yarn nx run --project client",
         "codecheck": "yarn nx run-many --target codecheck --all",
-        "codecheck:fix": "yarn nx run-many --target codecheck --configuration fix --all"
+        "codecheck:fix": "yarn nx run-many --target codecheck --configuration fix --all",
+        "build-clean": "rm -rf */**/dist */**/node_modules node_modules **/*tsbuildinfo || true"
     },
     "dependencies": {
         "@nestjs/testing": "^10.3.10",
