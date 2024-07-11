@@ -7,6 +7,7 @@ import { EXCHANGE_RATES_QUERY } from '../graphql';
 import { usePagination } from '../hooks';
 import { ExchangeRatesTable } from './exchange-rates-table';
 import { DataFetchRow } from './data-fetch-row';
+import { ExchangeRatesTableSkeleton } from './exchange-rates-table.skeleton';
 
 export const ExchangeRates: React.FC = () => {
     const [language, setLanguage] = useState<'EN' | 'CZ'>('EN');
@@ -53,7 +54,9 @@ export const ExchangeRates: React.FC = () => {
                 language={language}
             />
 
-            {data && (
+            {!data || loading ? (
+                <ExchangeRatesTableSkeleton rows={rowsPerPage} />
+            ) : (
                 <ExchangeRatesTable
                     rates={data.exchangeRates.rates}
                     page={page}

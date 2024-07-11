@@ -4,9 +4,14 @@ import { ToggleButton, ToggleButtonGroup } from '@mui/material';
 interface LanguageToggleProps {
     language: 'EN' | 'CZ';
     onLanguageChange: (newLanguage: 'EN' | 'CZ') => void;
+    disabled?: boolean;
 }
 
-export const LanguageToggle: React.FC<LanguageToggleProps> = ({ language, onLanguageChange }) => {
+export const LanguageToggle: React.FC<LanguageToggleProps> = ({
+    language,
+    onLanguageChange,
+    disabled,
+}) => {
     const handleLanguageChange = (
         event: React.MouseEvent<HTMLElement>,
         newLanguage: 'EN' | 'CZ' | null
@@ -22,6 +27,7 @@ export const LanguageToggle: React.FC<LanguageToggleProps> = ({ language, onLang
             exclusive
             onChange={handleLanguageChange}
             aria-label="language"
+            disabled={disabled}
         >
             <ToggleButton value="EN" aria-label="English">
                 EN

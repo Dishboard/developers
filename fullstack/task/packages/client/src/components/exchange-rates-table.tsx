@@ -17,6 +17,7 @@ interface ExchangeRatesTableProps {
     rowsPerPage: number;
     onPageChange: (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => void;
     onRowsPerPageChange: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+    isLoading?: boolean;
 }
 
 const ROWS_PER_PAGE_OPTIONS = [5, 10, 25];

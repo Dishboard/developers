@@ -34,7 +34,11 @@ export const DataFetchRow = ({
                     {loading ? <CircularProgress size={24} /> : 'Refetch'}
                 </StyledButton>
                 {!import.meta.env.VITE_MULTIPLE_LANGUAGE_SUPPORT && (
-                    <LanguageToggle language={language} onLanguageChange={handleLanguageChange} />
+                    <LanguageToggle
+                        language={language}
+                        onLanguageChange={handleLanguageChange}
+                        disabled={loading}
+                    />
                 )}
             </Grid>
         </Grid>
