@@ -2,6 +2,7 @@ import { Field, ObjectType } from '@nestjs/graphql';
 import { Column, Entity } from 'typeorm';
 import { EntityWithMeta } from '../common';
 import { VAR_CHAR } from './constants';
+import { Language } from './enums';
 
 @ObjectType()
 @Entity()
@@ -29,4 +30,8 @@ export class ExchangeRate extends EntityWithMeta {
     @Field(() => String)
     @Column({ ...VAR_CHAR })
     public currencyCode!: string;
+
+    @Field(() => Language)
+    @Column({ type: 'enum', enum: Language })
+    public language!: Language;
 }

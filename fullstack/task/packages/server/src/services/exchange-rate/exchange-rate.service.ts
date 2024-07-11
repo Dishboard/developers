@@ -1,19 +1,23 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { MoreThan, Repository } from 'typeorm';
 import { HttpService } from '@nestjs/axios';
 import { catchError, delay, map, retryWhen, tap } from 'rxjs/operators';
 import { concatMap, lastValueFrom, of } from 'rxjs';
 import { ConfigService } from '@nestjs/config';
 import { AxiosError, AxiosResponse } from 'axios';
-import { ExchangeRate } from '../../entities';
+import { ExchangeRate, Language } from '../../entities';
 import {
     ExchangeRateCNB,
     GetExchangeRatesResult,
     expectedExchangeRateResponseSchema,
 } from './types';
+import { ExchangeRateRepository } from './exchange-rate.repository';
 
 const DEFAULT_CNB_EXRATE_URL = 'https://api.cnb.cz/cnbapi/exrates/daily';
+
+const isServerError = (error: AxiosError) => {
+    return (error?.response?.status ?? 0) >= 500;
+};
 
 @Injectable()
 export class ExchangeRateService {
@@ -26,7 +30,7 @@ export class ExchangeRateService {
     constructor(
         private readonly httpService: HttpService,
         @InjectRepository(ExchangeRate)
-        private readonly exchangeRateRepository: Repository<ExchangeRate>,
+        readonly exchangeRateRepository: ExchangeRateRepository,
         private configService: ConfigService
     ) {
         this.cnbExRateUrl =
@@ -40,8 +44,17 @@ export class ExchangeRateService {
         this.transformResponseToRates = this.transformResponseToRates.bind(this);
     }
 
-    async getExchangeRates(language: string): Promise<GetExchangeRatesResult> {
-        const cachedRates = await this.getCachedExchangeRates();
+    // it shouldn't be here, but in Repository.
+    // however, adding it as method is not trivial at all. probably, a skill issue
+    async findByLanguage(language: Language): Promise<ExchangeRate[]> {
+        return this.exchangeRateRepository
+            .createQueryBuilder('exchangeRate')
+            .where('exchangeRate.language = :language', { language })
+            .getMany();
+    }
+
+    async getExchangeRates(language: Language): Promise<GetExchangeRatesResult> {
+        const cachedRates = await this.findByLanguage(language);
         if (cachedRates.length) {
             this.logger.debug('Returning exchange rates from cache');
             return {
@@ -51,12 +64,13 @@ export class ExchangeRateService {
             };
         }
 
-        const rates = await this.fetchExchangeRatesFromApi(language);
+        const rawRates = await this.fetchExchangeRatesFromApi(language);
 
-        // unlikely
+        let rates: ExchangeRate[] = [];
         try {
-            await this.cacheExchangeRates(rates);
+            rates = await this.cacheExchangeRates(rawRates, language);
         } catch (e: unknown) {
+            // we can also throw here. It depends on the requirements
             this.logger.error('Failed to cache exchange rates', e);
         }
 
@@ -67,18 +81,9 @@ export class ExchangeRateService {
         };
     }
 
-    getCachedExchangeRates(): Promise<ExchangeRate[]> {
-        const fiveMinutesAgo = new Date(Date.now() - this.updateFrequencyMinutes * 60 * 1000);
-        return this.exchangeRateRepository.find({
-            where: {
-                createdAtUtc: MoreThan(fiveMinutesAgo),
-            },
-        });
-    }
-
     handleRequestErrorAndRetry(error: AxiosError, attempt: number) {
         const isAnyAttemptsToServerErrorRetry =
-            this.isServerError(error) && attempt < this.retryAttempts;
+            isServerError(error) && attempt < this.retryAttempts;
         if (isAnyAttemptsToServerErrorRetry) {
             this.logger.warn(
                 `Retrying (${attempt + 1}/${this.retryAttempts})... Error: ${error.message}`
@@ -101,11 +106,11 @@ export class ExchangeRateService {
         return [];
     }
 
-    fetchExchangeRatesFromApi(language: string): Promise<ExchangeRate[]> {
+    fetchExchangeRatesFromApi(language: Language): Promise<ExchangeRate[]> {
         const apiUrl = `${this.cnbExRateUrl}?lang=${language}`;
         this.logger.log(`Fetching exchange rates from API: ${apiUrl}`);
         const source$ = this.httpService.get(apiUrl).pipe(
-            tap(() => this.logger.log('Fetched data from API: ')),
+            tap(() => this.logger.log(`Fetched data from API`)),
             retryWhen((errors) => errors.pipe(concatMap(this.handleRequestErrorAndRetry))),
             map(this.transformResponseToRates),
             catchError((error) => {
@@ -126,11 +131,12 @@ export class ExchangeRateService {
         return rate;
     }
 
-    async cacheExchangeRates(rates: ExchangeRate[]) {
-        await this.exchangeRateRepository.save(rates);
-    }
-
-    private isServerError(error: AxiosError): boolean {
-        return (error?.response?.status ?? 0) >= 500;
+    async cacheExchangeRates(rates: ExchangeRate[], language: Language): Promise<ExchangeRate[]> {
+        const ratesToSave = rates.map((rate) => {
+            const newRate = new ExchangeRate();
+            Object.assign(newRate, rate, { language });
+            return newRate;
+        });
+        return this.exchangeRateRepository.save(ratesToSave);
     }
 }

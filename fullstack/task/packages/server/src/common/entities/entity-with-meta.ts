@@ -14,7 +14,7 @@ export abstract class EntityWithMeta {
     public id!: string;
 
     @Field(() => Date)
-    @CreateDateColumn({ type: 'timestamptz' })
+    @CreateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
     public createdAtUtc!: Date;
 
     @Field(() => Date, { nullable: true })

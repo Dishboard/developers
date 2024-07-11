@@ -4,8 +4,9 @@ import { HttpModule, HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { of, throwError } from 'rxjs';
 import { AxiosError, AxiosHeaders, AxiosResponse } from 'axios';
+import { DeepPartial } from 'typeorm';
 import { ExchangeRateService } from '../exchange-rate.service';
-import { ExchangeRate } from '../../../entities';
+import { ExchangeRate, Language } from '../../../entities';
 
 describe('ExchangeRateService', () => {
     let service: ExchangeRateService;
@@ -26,7 +27,7 @@ describe('ExchangeRateService', () => {
     const repositoryProvider = {
         provide: getRepositoryToken(ExchangeRate),
         useValue: {
-            find: jest.fn(),
+            findByLanguage: jest.fn(),
             save: jest.fn(),
         },
     };
@@ -76,12 +77,13 @@ describe('ExchangeRateService', () => {
                 validFor: new Date('2024-07-06'),
                 currencyCode: 'USD',
                 createdAtUtc: new Date(),
+                language: Language.EN,
             } as ExchangeRate,
         ];
 
-        jest.spyOn(service, 'getCachedExchangeRates').mockResolvedValueOnce(cachedRates);
+        jest.spyOn(service, 'findByLanguage').mockResolvedValueOnce(cachedRates);
 
-        const result = await service.getExchangeRates('EN');
+        const result = await service.getExchangeRates(Language.EN);
 
         expect(result.rates.length).toBe(1);
         expect(result.cached).toBe(true);
@@ -98,10 +100,13 @@ describe('ExchangeRateService', () => {
             headers: {},
         } as AxiosResponse;
 
+        jest.spyOn(service, 'findByLanguage').mockResolvedValueOnce([]);
         jest.spyOn(httpService, 'get').mockReturnValueOnce(of(mockApiResponse));
-        jest.spyOn(service, 'getCachedExchangeRates').mockResolvedValueOnce([]);
+        jest.spyOn(service, 'cacheExchangeRates').mockReturnValue(
+            Promise.resolve(mockedRates as unknown as ExchangeRate[])
+        );
 
-        const result = await service.getExchangeRates('en');
+        const result = await service.getExchangeRates(Language.EN);
 
         expect(result.rates.length).toBe(1);
         expect(result.cached).toBe(false);
@@ -111,7 +116,9 @@ describe('ExchangeRateService', () => {
     it('should cache the fetched exchange rates from API', async () => {
         const mockApiResponse: AxiosResponse = {
             data: {
-                rates: mockedRates,
+                data: {
+                    rates: mockedRates,
+                },
             },
             status: 200,
             statusText: 'OK',
@@ -121,15 +128,27 @@ describe('ExchangeRateService', () => {
             },
         };
 
+        const mappedRates: ExchangeRate[] = mockedRates.map((rate) => {
+            const exchangeRate = new ExchangeRate();
+            Object.assign(exchangeRate, rate, {
+                validFor: new Date(rate.validFor),
+                createdAtUtc: new Date(),
+                updatedAtUtc: new Date(),
+            });
+            return exchangeRate;
+        });
+
         jest.spyOn(httpService, 'get').mockReturnValueOnce(of(mockApiResponse));
-        jest.spyOn(service, 'getCachedExchangeRates').mockResolvedValueOnce([]);
-        jest.spyOn(service, 'cacheExchangeRates').mockImplementationOnce(async () => {});
+        jest.spyOn(service, 'findByLanguage').mockResolvedValueOnce([]);
+        jest.spyOn(service.exchangeRateRepository, 'save').mockResolvedValueOnce(
+            mappedRates as unknown as DeepPartial<ExchangeRate> & ExchangeRate
+        );
 
-        const result = await service.getExchangeRates('en');
+        const result = await service.getExchangeRates(Language.EN);
 
-        expect(result.rates.length).toBe(1);
+        expect(result.rates.length).toBe(mockedRates.length);
         expect(result.cached).toBe(false);
-        expect(service.cacheExchangeRates).toHaveBeenCalledWith(expect.any(Array));
+        expect(service.exchangeRateRepository.save).toHaveBeenCalledWith(expect.any(Array));
     });
 
     it('should handle API errors and return empty rates array', async () => {
@@ -142,10 +161,11 @@ describe('ExchangeRateService', () => {
             response: undefined,
         } as AxiosError;
 
+        jest.spyOn(service, 'findByLanguage').mockResolvedValueOnce([]);
         jest.spyOn(httpService, 'get').mockReturnValueOnce(throwError(() => mockApiError));
-        jest.spyOn(service, 'getCachedExchangeRates').mockResolvedValueOnce([]);
+        jest.spyOn(service, 'cacheExchangeRates').mockReturnValue(Promise.resolve([]));
 
-        const result = await service.getExchangeRates('en');
+        const result = await service.getExchangeRates(Language.EN);
 
         expect(result.rates.length).toBe(0);
         expect(result.cached).toBe(false);
