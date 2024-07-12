@@ -9,8 +9,8 @@
     },
     "defaultBase": "main",
     "namedInputs": {
-        "tsconfig": ["{workspaceRoot}/tsconfig.json", "{projectRoot}/tsgonfig.json"],
-        "eslintrc": ["{workspaceRoot}/.eslintrc.js", "{projectRoot}/.eslintrc.js"],
+        "tsconfig": ["{workspaceRoot}/fullstack/task/tsconfig.json", "{projectRoot}/tsgonfig.json"],
+        "eslintrc": ["{workspaceRoot}/fullstack/task/.eslintrc.js", "{projectRoot}/.eslintrc.js"],
         "prettierrc": [
             "{workspaceRoot}/.prettierrc",
             "{projectRoot}/.prettierrc",

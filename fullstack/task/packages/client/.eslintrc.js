@@ -8,6 +8,7 @@ module.exports = {
         ecmaFeatures: {
             jsx: true,
         },
+        tsconfigRootDir: path.dirname(),
     },
     globals: {
         React: true,

@@ -1419,6 +1419,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@nestjs/axios@npm:^3.0.2":
+  version: 3.0.2
+  resolution: "@nestjs/axios@npm:3.0.2"
+  peerDependencies:
+    "@nestjs/common": ^7.0.0 || ^8.0.0 || ^9.0.0 || ^10.0.0
+    axios: ^1.3.1
+    rxjs: ^6.0.0 || ^7.0.0
+  checksum: 285a735fb5db602b63aa4a37e161f609b2cec05b69f4bffe983617c2136ac29c0a33bb96e6276d22a656907bed5d53460e740310bc05c043dcd39c37db7cda29
+  languageName: node
+  linkType: hard
+
 "@nestjs/cli@npm:9.0.0":
   version: 9.0.0
   resolution: "@nestjs/cli@npm:9.0.0"
@@ -1957,6 +1968,25 @@ __metadata:
   version: 1.2.5
   resolution: "@sqltools/formatter@npm:1.2.5"
   checksum: 9b8354e715467d660daa5afe044860b5686bbb1a5cb67a60866b932effafbf5e8b429f19a8ae67cd412065a4f067161f227e182f3664a0245339d5eb1e26e355
+  languageName: node
+  linkType: hard
+
+"@tanstack/react-table@npm:^8.19.2":
+  version: 8.19.2
+  resolution: "@tanstack/react-table@npm:8.19.2"
+  dependencies:
+    "@tanstack/table-core": 8.19.2
+  peerDependencies:
+    react: ">=16.8"
+    react-dom: ">=16.8"
+  checksum: 75113674c6575cc9e200b7535b0ae255849326c4776fa06c4a9e4b9224e84abe322e39349c6dff960c6a32bec580a13cc35b2de099ba4bc650f114c04833335d
+  languageName: node
+  linkType: hard
+
+"@tanstack/table-core@npm:8.19.2":
+  version: 8.19.2
+  resolution: "@tanstack/table-core@npm:8.19.2"
+  checksum: 23f5ae31ff9695a93a6390b95d62e52d4a5ae76872660068b1dd5baa23bea46727ee9649681a0ddba2451152f5175759d628258c2e26a488932fd16fa6e7b5c1
   languageName: node
   linkType: hard
 
@@ -3478,6 +3508,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"axios@npm:^1.7.2":
+  version: 1.7.2
+  resolution: "axios@npm:1.7.2"
+  dependencies:
+    follow-redirects: ^1.15.6
+    form-data: ^4.0.0
+    proxy-from-env: ^1.1.0
+  checksum: e457e2b0ab748504621f6fa6609074ac08c824bf0881592209dfa15098ece7e88495300e02cd22ba50b3468fd712fe687e629dcb03d6a3f6a51989727405aedf
+  languageName: node
+  linkType: hard
+
 "axobject-query@npm:^2.2.0":
   version: 2.2.0
   resolution: "axobject-query@npm:2.2.0"
@@ -4652,8 +4693,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "dishboard@workspace:."
   dependencies:
+    "@nestjs/axios": ^3.0.2
+    "@tanstack/react-table": ^8.19.2
     "@types/jest": 28.1.8
     "@types/node": 18.8.0
+    axios: ^1.7.2
     eslint: 8.24.0
     jest: 28.1.3
     nx: 15.5.2
@@ -5912,6 +5956,16 @@ __metadata:
     debug:
       optional: true
   checksum: 584da22ec5420c837bd096559ebfb8fe69d82512d5585004e36a3b4a6ef6d5905780e0c74508c7b72f907d1fa2b7bd339e613859e9c304d0dc96af2027fd0231
+  languageName: node
+  linkType: hard
+
+"follow-redirects@npm:^1.15.6":
+  version: 1.15.6
+  resolution: "follow-redirects@npm:1.15.6"
+  peerDependenciesMeta:
+    debug:
+      optional: true
+  checksum: a62c378dfc8c00f60b9c80cab158ba54e99ba0239a5dd7c81245e5a5b39d10f0c35e249c3379eae719ff0285fff88c365dd446fab19dee771f1d76252df1bbf5
   languageName: node
   linkType: hard
 

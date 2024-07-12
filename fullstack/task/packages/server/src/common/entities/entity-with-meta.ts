@@ -35,5 +35,4 @@ export const omittedEntityMetaColumns: (keyof EntityWithMeta)[] = [
     'updatedAtUtc',
     'createdAtUtc',
     'deleteDateUtc',
-    'deleteDateUtc',
 ];

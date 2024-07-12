@@ -1,5 +1,7 @@
+import ExchangeRates from "./ExchangeRates";
+
 function App() {
-    return <p>TODO</p>;
+    return <ExchangeRates />;
 }
 
 export default App;
