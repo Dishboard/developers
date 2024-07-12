@@ -1,0 +1,23 @@
+{
+    "name": "@dishboard/eslint-config",
+    "version": "1.0.0",
+    "private": true,
+    "main": "./index.js",
+    "dependencies": {
+        "@rushstack/eslint-patch": "1.2.0",
+        "@typescript-eslint/eslint-plugin": "5.39.0",
+        "@typescript-eslint/parser": "5.39.0",
+        "eslint-config-airbnb": "19.0.4",
+        "eslint-config-prettier": "8.5.0",
+        "eslint-import-resolver-typescript": "3.5.3",
+        "eslint-plugin-import": "2.27.5",
+        "eslint-plugin-jsx-a11y": "6.6.1",
+        "eslint-plugin-prettier": "4.2.1",
+        "eslint-plugin-react": "7.31.8",
+        "eslint-plugin-react-hooks": "4.6.0"
+    },
+    "peerDependencies": {
+        "eslint": "*",
+        "prettier": "*"
+    }
+}

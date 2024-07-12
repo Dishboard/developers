@@ -1,0 +1,82 @@
+{
+    "tasksRunnerOptions": {
+        "default": {
+            "runner": "nx/tasks-runners/default",
+            "options": {
+                "cacheableOperations": ["codecheck", "build"]
+            }
+        }
+    },
+    "defaultBase": "main",
+    "namedInputs": {
+        "tsconfig": ["{workspaceRoot}/fullstack/task/tsconfig.json", "{projectRoot}/tsgonfig.json"],
+        "eslintrc": ["{workspaceRoot}/fullstack/task/.eslintrc.js", "{projectRoot}/.eslintrc.js"],
+        "prettierrc": [
+            "{workspaceRoot}/.prettierrc",
+            "{projectRoot}/.prettierrc",
+            "{workspaceRoot}/.prettierignore",
+            "{projectRoot}/.prettierignore"
+        ],
+        "allFiles": ["{projectRoot}/**/*.ts"]
+    },
+    "targetDefaults": {
+        "codecheck": {
+            "executor": "nx:run-commands",
+            "inputs": ["eslintrc", "prettierrc", "tsconfig", "allFiles"],
+            "options": {
+                "cwd": "{projectRoot}",
+                "commands": [
+                    {
+                        "command": "nx run {projectName}:codecheck:typescript",
+                        "prefix": "typescript"
+                    },
+                    {
+                        "command": "nx run {projectName}:codecheck:test",
+                        "prefix": "test"
+                    },
+                    {
+                        "command": "nx run {projectName}:codecheck:prettier",
+                        "prefix": "prettier"
+                    },
+                    {
+                        "command": "nx run {projectName}:codecheck:lint",
+                        "prefix": "lint"
+                    }
+                ],
+                "color": true
+            },
+            "configurations": {
+                "typescript": {
+                    "commands": ["tsc"]
+                },
+                "test": {
+                    "commands": ["yarn jest --passWithNoTests"]
+                },
+                "prettier": {
+                    "commands": ["prettier --check \"./src/**/*.ts\""]
+                },
+                "prettier:fix": {
+                    "commands": ["prettier --write \"./src/**/*.ts\""]
+                },
+                "lint": {
+                    "commands": ["eslint --max-warnings=0 \"./{src,apps,libs,test}/**/*.ts\""]
+                },
+                "lint:fix": {
+                    "commands": ["eslint \"{src,apps,libs,test}/**/*.ts\" --fix"]
+                },
+                "fix": {
+                    "commands": [
+                        {
+                            "command": "nx run {projectName}:codecheck:prettier:fix",
+                            "prefix": "prettier"
+                        },
+                        {
+                            "command": "nx run {projectName}:codecheck:lint:fix",
+                            "prefix": "lint"
+                        }
+                    ]
+                }
+            }
+        }
+    }
+}
