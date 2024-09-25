@@ -1,3 +1,4 @@
+import { HttpService } from '@nestjs/axios';
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { format } from 'date-fns';
@@ -8,16 +9,15 @@ import { IExchangeRate } from './types/exchange-rates.types';
 @Injectable()
 export class ExchangeRateService {
     private logger = new Logger(ExchangeRateService.name);
-    private readonly EXCHANGE_API_URL_BASE = process.env.EXCHANGE_RATES_API_URL_BASE;
 
     constructor(
         @InjectRepository(ExchangeRate)
-        private readonly exchangeRateRepository: Repository<ExchangeRate>
+        private readonly exchangeRateRepository: Repository<ExchangeRate>,
+        private readonly httpService: HttpService
     ) {}
 
-    public getExchangeRates = async (date?: Date): Promise<ExchangeRate[]> => {
-        const endpointForDate = this.getEndpointUrlForDate(date || new Date());
-        const cached: ExchangeRate[] = await this.getExchangeRatesFromCache();
+    public getExchangeRates = async (): Promise<ExchangeRate[]> => {
+        const cached: ExchangeRate[] = await this.getExchangeRatesFromDb();
 
         if (cached?.length) {
             return cached;
@@ -25,8 +25,9 @@ export class ExchangeRateService {
 
         let rates: IExchangeRate[] = [];
         try {
-            const apiResponse = await fetch(endpointForDate);
-            const bodyParts: string[] = (await apiResponse.text()).split('\n');
+            const apiResponse = await this.httpService.get('daily.txt').toPromise();
+
+            const bodyParts: string[] = apiResponse?.data.split('\n');
             this.logger.log(`Parsing details for ${bodyParts.splice(0, 1)}`);
 
             const headings = this.transformDataLine(bodyParts.splice(0, 1)?.[0] || '');
@@ -48,12 +49,12 @@ export class ExchangeRateService {
 
             return await this.exchangeRateRepository.save(rates);
         } catch (err) {
-            this.logger.error(`Failed to fetch endpoint: ${endpointForDate}`);
+            this.logger.error(`Failed to fetch Checz National Bank resources`);
             throw new BadRequestException(`Could not save the Checz National Bank resources.`);
         }
     };
 
-    private async getExchangeRatesFromCache(): Promise<ExchangeRate[]> {
+    private async getExchangeRatesFromDb(): Promise<ExchangeRate[]> {
         const last5Mins = new Date(new Date().getTime() - 5 * 60 * 1000);
 
         const cached = await this.exchangeRateRepository.find({
@@ -67,10 +68,6 @@ export class ExchangeRateService {
         });
 
         return cached;
-    }
-
-    private getEndpointUrlForDate(date: Date): string {
-        return `${this.EXCHANGE_API_URL_BASE}?date=${format(date, 'dd.MM.yyyy')}`;
     }
 
     private transformDataLine(line: string): string[] {
