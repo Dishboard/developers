@@ -1,4 +1,4 @@
-import { ValidationPipe } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestApplication, NestFactory } from '@nestjs/core';
 import { useContainer } from 'class-validator';
@@ -16,6 +16,9 @@ async function bootstrap() {
 
     const host = '0.0.0.0';
     await app.listen(port, host);
+
+    const logger = new Logger('App');
+    logger.log(`Application is Running at ${host}:${port}`);
 }
 
 bootstrap();
