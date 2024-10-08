@@ -93,7 +93,7 @@ export class ExchangeRateService {
      * @returns {Promise<void>} - Empty the exchange_rates table, load current echange rates into DB
      */
 
-    @Cron(CronExpression.EVERY_10_SECONDS)
+    @Cron(CronExpression.EVERY_5_MINUTES)
     public async loadCurrentExchangeRates(): Promise<void> {
         await this.truncateExchangeRates();
         await this.fetchExchangeRates();

@@ -19,6 +19,13 @@
                 "command": "yarn vite build",
                 "cwd": "packages/client"
             }
+        },
+        "lint": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "packages/client",
+                "command":"eslint './src/**/*.{ts,tsx}' --fix"
+            }
         }
     }
 }
