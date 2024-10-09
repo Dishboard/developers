@@ -18,6 +18,14 @@ export class ExchangeRateService {
     ) {}
 
     /**
+     * Method called when the module is initialized.
+     * Triggers loading current exchange rates on app startup.
+     */
+    async onModuleInit() {
+        await this.loadCurrentExchangeRates();
+    }
+
+    /**
      * Get current daily exchange rates from database.
      *
      * @returns {Promise<ExchangeRate[]>} -array of current exchange rates.
