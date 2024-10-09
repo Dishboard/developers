@@ -1,6 +1,6 @@
 import { Query, Resolver } from '@nestjs/graphql';
-import { ExchangeRateService } from './exchange-rate.service';
 import { ExchangeRate } from 'src/entities/exchange-rate.entity';
+import { ExchangeRateService } from './exchange-rate.service';
 
 @Resolver()
 export class ExchangeRateResolver {
@@ -8,6 +8,6 @@ export class ExchangeRateResolver {
 
     @Query(() => [ExchangeRate])
     async exchangeRates(): Promise<ExchangeRate[]> {
-        return await this.exchangeRateService.getExchangeRates();
+        return this.exchangeRateService.getExchangeRates();
     }
 }
