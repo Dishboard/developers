@@ -1,2 +1,5 @@
 import config from '@dishboard/jest-config';
-export default config;
+export default {
+    ...config,
+    testEnvironment: 'jsdom',
+};

@@ -1,4 +1,3 @@
-// src/App.tsx
 import React from 'react';
 import { ApolloProvider } from '@apollo/client';
 import client from './graphql/ApolloClient';

@@ -61,7 +61,7 @@ const ExchangeRates: React.FC = () => {
       {/* Display last updated time outside of the table */}
       {relativeTime && <p>Last Updated: {relativeTime}</p>}
 
-      <table border="1" cellPadding="10" style={{ width: '100%', borderCollapse: 'collapse' }}>
+      <table border={1} cellPadding="10" style={{ width: '100%', borderCollapse: 'collapse' }}>
         <thead>
           <tr>
             <th>Country</th>
