@@ -8,6 +8,7 @@ const HomePage = () => {
     const [exchangeRates, setExchangeRates] = useState<ExchangeRate[]>([]);
     const [pollInterval, setPollInterval] = useState<number | undefined>(undefined);
 
+    // pollInterval is set to the expiration time of the current exchange rates + 10 seconds.
     const { loading, error, data } = useQuery(EXCHANGE_RATES_QUERY, {
         fetchPolicy: 'cache-and-network',
         pollInterval: pollInterval,
@@ -24,7 +25,7 @@ const HomePage = () => {
                 const currentTime = Date.now();
 
                 if (nextRefreshTime > currentTime) {
-                    const remainingTime = nextRefreshTime - currentTime;
+                    const remainingTime = nextRefreshTime - currentTime + 10000;
                     setPollInterval(remainingTime);
                 } else {
                     setPollInterval(300000);
@@ -52,7 +53,7 @@ const HomePage = () => {
                 {loading && <p>Loading...</p>}
                 {error && <p>Error fetching data: {error.message}</p>}
                 {!error && !loading && exchangeRates.length > 0 ? (
-                    <h1>{`Last update of exchange rates was at ${formatMillisecondsToLocalDate(exchangeRates[0]?.createdAtUtc)} ${pollInterval}`}</h1>
+                    <h1>{`Last update of exchange rates was at ${formatMillisecondsToLocalDate(exchangeRates[0]?.createdAtUtc)}`}</h1>
                 ) : (
                     !loading && <h1>No exchange rates available.</h1>
                 )}
