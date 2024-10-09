@@ -93,6 +93,8 @@ export class ExchangeRateService {
             await this.fetchAndStoreExchangeRates();
         }
 
-        return this.exchangeRateRepository.find();
+        return this.exchangeRateRepository.find({
+            order: { country: 'ASC' },
+        });
     }
 }
