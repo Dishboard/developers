@@ -4,6 +4,9 @@ const config = {
     transform: {
         '^.+\\.ts?$': 'ts-jest',
     },
+    moduleNameMapper: {
+    '^src/(.*)$': '<rootDir>/src/$1',
+  },
 };
 
 export default config;
