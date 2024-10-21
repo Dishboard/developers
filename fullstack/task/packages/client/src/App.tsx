@@ -31,15 +31,18 @@ function App() {
     return <div>
         <h1>Exchange Rates</h1>
         <table>
-            <tr>
-                <th>Country</th>
-                <th>Currency</th>
-                <th>Amount</th>
-                <th>Code</th>
-                <th>Rate</th>
-            </tr>
-            {data.exchangeRates.map(({country, currency, amount, code, rate}: ExchangeRate) => (
+            <thead>
                 <tr>
+                    <th>Country</th>
+                    <th>Currency</th>
+                    <th>Amount</th>
+                    <th>Code</th>
+                    <th>Rate</th>
+                </tr>
+            </thead>
+            <tbody>
+            {data.exchangeRates.map(({country, currency, amount, code, rate}: ExchangeRate) => (
+                <tr key={code}>
                     <td>{country}</td>
                     <td>{currency}</td>
                     <td>{amount}</td>
@@ -47,6 +50,7 @@ function App() {
                     <td>{rate}</td>
                 </tr>
             ))}
+            </tbody>
         </table>
         <p>Updated on {updateDate.toDateString()} at {updateDate.toTimeString()}</p>
     </div>;
