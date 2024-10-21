@@ -1,4 +1,4 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { IsNumber, IsString, MinLength } from 'class-validator';
 import { Column, Entity } from 'typeorm';
 import { EntityWithMeta } from '../common';
@@ -21,7 +21,7 @@ export class ExchangeRate extends EntityWithMeta {
 
     @IsNumber()
     @Column({ type: 'integer', default: 1 })
-    @Field(() => Number)
+    @Field(() => Int)
     public amount!: number;
 
     @IsString()

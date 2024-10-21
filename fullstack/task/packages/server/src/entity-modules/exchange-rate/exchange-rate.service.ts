@@ -33,6 +33,13 @@ export class ExchangeRateService {
         return this.exchangeRateRepository.save(exchangeRate);
     };
 
+    public async insertAll(exchangeRates: Partial<ExchangeRate>[]): Promise<ExchangeRate[]> {
+        await this.exchangeRateRepository.clear();
+        const exchangeRatesEntities = this.exchangeRateRepository.create(exchangeRates);
+        await this.exchangeRateRepository.insert(exchangeRatesEntities);
+        return exchangeRatesEntities;
+    }
+
     public async findAll(): Promise<ExchangeRate[]> {
         return this.exchangeRateRepository.find({})
     }

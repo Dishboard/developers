@@ -25,7 +25,7 @@ type ExchangeRate {
   version: Int!
   country: String!
   currency: String!
-  amount: Float!
+  amount: Int!
   code: String!
   rate: Float!
 }
