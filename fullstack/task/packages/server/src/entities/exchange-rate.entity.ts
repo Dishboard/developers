@@ -1,5 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { IsString, MinLength } from 'class-validator';
+import { IsNumber, IsString, MinLength } from 'class-validator';
 import { Column, Entity } from 'typeorm';
 import { EntityWithMeta } from '../common';
 import { VAR_CHAR } from './constants';
@@ -8,16 +8,30 @@ import { VAR_CHAR } from './constants';
 @Entity()
 export class ExchangeRate extends EntityWithMeta {
     @IsString()
-    @MinLength(1)
-    @Field(() => String)
+    @MinLength(3)
     @Column({ ...VAR_CHAR })
-    public name!: string;
+    @Field(() => String)
+    public country!: string;
 
     @IsString()
-    @MinLength(1)
-    @Field(() => String)
+    @MinLength(2)
     @Column({ ...VAR_CHAR })
-    public value!: string;
+    @Field(() => String)
+    public currency!: string;
 
-    /* Relations */
+    @IsNumber()
+    @Column({ type: 'integer', default: 1 })
+    @Field(() => Number)
+    public amount!: number;
+
+    @IsString()
+    @MinLength(2)
+    @Column({ ...VAR_CHAR })
+    @Field(() => String)
+    public code!: string;
+
+    @IsNumber()
+    @Column({ type: 'decimal' })
+    @Field(() => Number)
+    public rate!: number;
 }

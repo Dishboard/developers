@@ -1,12 +1,11 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ExchangeRate } from '../../entities';
-import { ExchangeRateResolver } from './exchange-rate.resolver';
 import { ExchangeRateService } from './exchange-rate.service';
 
 @Module({
     imports: [TypeOrmModule.forFeature([ExchangeRate])],
-    providers: [ExchangeRateService, ExchangeRateResolver],
+    providers: [ExchangeRateService],
     exports: [ExchangeRateService],
 })
-export class ExchangeRateModule {}
+export class ExchangeRateEntityModule {}
