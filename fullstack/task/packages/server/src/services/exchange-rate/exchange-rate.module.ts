@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
-import { ExchangeRateService } from './exchange-rate.service';
 import { ExchangeRateResolver } from './exchange-rate.resolver';
+import { ExchangeRateEntityModule } from 'src/entity-modules/exchange-rate/exchange-rate.module';
+import { ExchangeRateScheduler } from './exchange-rate.scheduler';
 
 @Module({
-    imports: [],
-    providers: [ExchangeRateService, ExchangeRateResolver],
-    exports: [ExchangeRateService],
+    imports: [ExchangeRateEntityModule],
+    providers: [ExchangeRateResolver, ExchangeRateScheduler],
+    exports: [],
 })
 export class ExchangeRateModule {}
