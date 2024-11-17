@@ -11,16 +11,20 @@
         "codecheck:fix": "yarn nx run-many --target codecheck --configuration fix --all"
     },
     "dependencies": {
+        "@nestjs/bull": "^10.2.2",
+        "@nestjs/schedule": "^4.1.1",
         "@types/jest": "28.1.8",
+        "bull": "^4.16.4",
         "eslint": "8.24.0",
         "jest": "28.1.3",
         "prettier": "2.7.1",
+        "redis": "^4.7.0",
         "ts-jest": "28.0.8",
         "ts-node": "^10.9.1",
         "typescript": "4.7.4"
     },
     "devDependencies": {
-        "@types/node": "18.8.0",
+        "@types/node": "^18.8.0",
         "nx": "15.5.2",
         "tsconfig-paths": "4.1.0"
     }
