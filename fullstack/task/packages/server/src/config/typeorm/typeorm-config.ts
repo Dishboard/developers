@@ -21,5 +21,5 @@ export const typeormConfig: DataSourceOptions = {
     synchronize: false,
     migrationsRun: true,
     migrations: ['dist/migrations/*.js'],
-    entities: ['dist/entities/*.entity.js'],
+    entities: ['dist/entities/*.entity.js', 'dist/services/*/entities/*.entity.js'],
 };
