@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
+import { ExchangeRate } from './exchange-rate.model';
 @Injectable()
 export class ExchangeRateService {
-    public getExchangeRates = async (): Promise<string>  => {
+    public getExchangeRates = async (): Promise<ExchangeRate[]>  => {
         
         // Found endpoints -
         // XML - https://www.cnb.cz/cs/financni_trhy/devizovy_trh/kurzy_devizoveho_trhu/denni_kurz.xml
@@ -30,10 +31,13 @@ export class ExchangeRateService {
                     rate: parseFloat(rate.trim())
                 });
             }
-            return JSON.stringify(exchangeRates);
+            
+            return exchangeRates;
+            // return JSON.stringify(exchangeRates);
         } catch (error) {
             console.error('Error fetching exchange rates:', error);
-            return "Oops, something went wrong!";
+            // return "Oops, something went wrong!"
+            throw new Error("Oops, something went wrong!");
         }
     };
 }
