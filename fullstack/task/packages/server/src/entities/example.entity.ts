@@ -19,5 +19,7 @@ export class Example extends EntityWithMeta {
     @Column({ ...VAR_CHAR })
     public value!: string;
 
+    @Column()
+    createdAt!: Date;
     /* Relations */
 }

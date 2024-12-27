@@ -1,7 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Column, Entity, PrimaryGeneratedColumn,BaseEntity } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, BaseEntity } from 'typeorm';
 import { IsString } from 'class-validator';
-import { VAR_CHAR } from 'src/common';
 
 @Entity()
 @ObjectType()
@@ -11,12 +10,12 @@ export class ExchangeRate extends BaseEntity {
 
     @IsString()
     @Field()
-    @Column({ ...VAR_CHAR })
+    @Column()
     country!: string;
 
     @IsString()
     @Field(() => String)
-    @Column({ ...VAR_CHAR })
+    @Column()
     currency!: string;
 
     @Field()
@@ -24,13 +23,13 @@ export class ExchangeRate extends BaseEntity {
     amount!: number;
 
     @Field(() => String)
-    @Column({ ...VAR_CHAR })
+    @Column()
     @IsString()
     code!: string;
 
     @Field()
     @Column()
-    rate!: number;
+    rate!: string;
 
     @Field()
     @Column()
