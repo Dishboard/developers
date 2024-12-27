@@ -1,12 +1,18 @@
 import React from 'react';
 import ExchangeRatesTable from './components/ExchangeRatesTable';
+import {
+  Container,
+  Typography,
+} from '@mui/material';
 
 const App: React.FC = () => {
   return (
-    <div>
-      <h1>Exchange Rates</h1>
+    <Container >
+        <Typography variant="h3" gutterBottom sx={{ml: 3}}>
+        Exchange Rates
+          </Typography>
       <ExchangeRatesTable />
-    </div>
+    </Container>
   );
 };
 

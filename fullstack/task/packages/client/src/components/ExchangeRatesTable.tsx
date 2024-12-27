@@ -1,54 +1,81 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { GET_EXCHANGE_RATES } from './getExchangeRageQuery';
+import {
+    Container,
+    Typography,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Paper,
+    CircularProgress,
+    Alert,
+} from '@mui/material';
 
 const ExchangeRatesTable: React.FC = () => {
-  const { loading, error, data } = useQuery(GET_EXCHANGE_RATES);
-  const [timeSinceFetch, setTimeSinceFetch] = useState<number>(0);
+    const { loading, error, data } = useQuery(GET_EXCHANGE_RATES);
+    const [timeSinceFetch, setTimeSinceFetch] = useState<string>('');
 
-  useEffect(() => {
-    if (data) {
-      const fetchTime = new Date(data.exchangeRates[0].timestamp);
-      const now = new Date();
-      const timeDiff = Math.floor((now.getTime() - fetchTime.getTime()) / 1000); 
+    useEffect(() => {
+        if (data) {
+            const fetchTime = new Date(data.exchangeRates[0].timestamp);
+            const now = new Date();
+            const timeDiff = Math.floor((now.getTime() - fetchTime.getTime()) / 60000);
+            setTimeSinceFetch(timeDiff == 0 ? 'now' : `${timeDiff} minutes ago`);
+        }
+    }, [data]);
 
-      const minutes = Math.floor(timeDiff / 60);
+    if (error) return <Alert severity="error">Error: {error.message}</Alert>;
 
-      setTimeSinceFetch(minutes);
-    }
-  }, [data]);
-
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
-
-  
-  return (
-    <div>
-      <p>Rates fetched: {timeSinceFetch} minutes ago</p>
-    <table>
-      <thead>
-        <tr>
-          <th>Country</th>
-          <th>Currency</th>
-          <th>Amount</th>
-          <th>Code</th>
-          <th>Rate</th>
-        </tr>
-      </thead>
-      <tbody>
-        {data.exchangeRates.map((rate: any, index: number) => (
-          <tr key={index}>
-            <td>{rate.country}</td>
-            <td>{rate.currency}</td>
-            <td>{rate.amount}</td>
-            <td>{rate.code}</td>
-            <td>{rate.rate}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-    </div>
-  );
+    return (
+        <Container>
+            {loading ? (
+                <Container
+                    sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        height: '100vh',
+                    }}
+                >
+                    <CircularProgress />
+                </Container>
+            ) : (
+                <>
+                    <Typography variant="h6" gutterBottom>
+                        Rates fetched: {timeSinceFetch}
+                    </Typography>
+                    <TableContainer component={Paper} sx={{ maxHeight: '85vh' }}>
+                        <Table stickyHeader>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Country</TableCell>
+                                    <TableCell>Currency</TableCell>
+                                    <TableCell>Amount</TableCell>
+                                    <TableCell>Code</TableCell>
+                                    <TableCell>Rate</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {data.exchangeRates.map((rate: any, index: number) => (
+                                    <TableRow key={index}>
+                                        <TableCell>{rate.country}</TableCell>
+                                        <TableCell>{rate.currency}</TableCell>
+                                        <TableCell>{rate.amount}</TableCell>
+                                        <TableCell>{rate.code}</TableCell>
+                                        <TableCell>{rate.rate}</TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </>
+            )}
+        </Container>
+    );
 };
 
 export default ExchangeRatesTable;
