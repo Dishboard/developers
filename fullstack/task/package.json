@@ -8,7 +8,8 @@
         "server": "yarn nx run --project server",
         "client": "yarn nx run --project client",
         "codecheck": "yarn nx run-many --target codecheck --all",
-        "codecheck:fix": "yarn nx run-many --target codecheck --configuration fix --all"
+        "codecheck:fix": "yarn nx run-many --target codecheck --configuration fix --all",
+        "test:server": "yarn nx run server:test"
     },
     "dependencies": {
         "@types/jest": "28.1.8",

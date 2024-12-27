@@ -54,6 +54,13 @@
                     "command": "yarn typeorm-ts-node-commonjs migration:create -d ./src/config/typeorm/data-source.ts ./src/migrations/{args.name}"
                 }
             }
+        },
+        "test": {
+          "executor": "nx:run-script",
+          "options": {
+            "cwd": "packages/server",
+            "script": "test"
+          }
         }
     }
 }

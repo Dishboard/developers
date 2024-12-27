@@ -6,7 +6,8 @@
     "license": "UNLICENSED",
     "scripts": {
         "build": "nest build",
-        "serve": "node dist/main"
+        "serve": "node dist/main",
+        "test": "jest --config ./jest.config.ts --passWithNoTests"
     },
     "dependencies": {
         "@nestjs/apollo": "10.1.3",

@@ -1,0 +1,16 @@
+type ExchangeRate {
+    country: String!
+    currency: String!
+    amount: Int!
+    code: String!
+    rate: Float!
+}
+
+type ExchangeRateResponse {
+    rates: [ExchangeRate!]!
+    lastFetched: String
+}
+
+type Query {
+    exchangeRates: ExchangeRateResponse!
+}
