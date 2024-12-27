@@ -7,7 +7,6 @@ export class ExchangeRateResolver {
 
     @Query(() => [ExchangeRate])
     async exchangeRates(): Promise<ExchangeRate[]> {
-        console.log('exchangeRates');
         return this.exchangeRateService.getExchangeRates();
     }
 }

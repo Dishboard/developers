@@ -29,7 +29,7 @@ export class ExchangeRateService {
 
         const url =
             'https://www.cnb.cz/en/financial-markets/foreign-exchange-market/central-bank-exchange-rate-fixing/central-bank-exchange-rate-fixing/daily.txt';
-
+        await this.exchangeRateRepository.clear();
         try {
             const response = await axios.get(url);
             const data = response.data;
@@ -42,6 +42,7 @@ export class ExchangeRateService {
                 if (line.trim() === '') continue;
 
                 const [country, currency, amount, code, rate] = line.split('|');
+
                 exchangeRates.push(
                     this.exchangeRateRepository.create({
                         country: country.trim(),
