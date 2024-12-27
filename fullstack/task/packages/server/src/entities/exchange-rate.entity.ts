@@ -2,10 +2,10 @@ import { Field, Float, ObjectType } from '@nestjs/graphql';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('exchange_rates')
-@ObjectType() // Marks the class as a GraphQL ObjectType
+@ObjectType()
 export class ExchangeRate {
     @PrimaryGeneratedColumn()
-    @Field(() => Number) // Exposes this field in the GraphQL schema
+    @Field(() => Number)
     id!: number;
 
     @Column()
