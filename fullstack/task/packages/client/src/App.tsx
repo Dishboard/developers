@@ -1,5 +1,11 @@
-function App() {
-    return <p>TODO</p>;
-}
+import { ExchangeRates } from './ExchangeRates';
+
+const App = () => {
+    return (
+        <div>
+            <ExchangeRates />
+        </div>
+    );
+};
 
 export default App;
