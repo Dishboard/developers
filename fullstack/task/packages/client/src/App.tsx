@@ -1,5 +1,7 @@
+import ExchangeRateTable from "./components/ExchangeRateTable";
+
 function App() {
-    return <p>TODO</p>;
+    return <ExchangeRateTable />;
 }
 
 export default App;
