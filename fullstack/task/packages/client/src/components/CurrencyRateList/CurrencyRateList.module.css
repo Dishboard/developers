@@ -1,0 +1,34 @@
+.list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    padding: 10px;
+    background-color: #f0f0f0;
+    border-radius: 4px;
+  }
+
+  .header span {
+    flex: 1;
+  }
+
+  .header span:last-child {
+    text-align: right;
+  }
+
+  .loading,
+  .error {
+    text-align: center;
+    padding: 20px;
+    font-size: 18px;
+  }
+
+  .error {
+    color: #d32f2f;
+  }
+

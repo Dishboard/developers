@@ -1,0 +1,32 @@
+.item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: white;
+    padding: 15px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+  }
+
+  .item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .code {
+    font-weight: bold;
+    width: 60px;
+    color: #1976d2;
+  }
+
+  .name {
+    flex-grow: 1;
+    margin: 0 10px;
+  }
+
+  .rate {
+    font-weight: bold;
+    color: #2e7d32;
+  }
+
